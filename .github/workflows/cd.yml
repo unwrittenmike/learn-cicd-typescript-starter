@@ -29,5 +29,5 @@ jobs:
           credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
       - name: "Set up Cloud SDK"
         uses: "google-github-actions/setup-gcloud@v2"
-      - name: "Use gcloud CLI"
-        run: "gcloud info"
+      - name: "Submit image to Artifact Registry"
+        run: "gcloud builds submit --tag us-central1-docker.pkg.dev/vivid-spot-462209-g5/notely-ar-repo/notely:latest ."
