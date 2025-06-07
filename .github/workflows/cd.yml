@@ -8,6 +8,8 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
     steps:
       - name: Check out code
@@ -23,6 +25,7 @@ jobs:
 
       - name: Build project
         run: npm run build
+
       - id: "auth"
         uses: "google-github-actions/auth@v2"
         with:
@@ -31,5 +34,7 @@ jobs:
         uses: "google-github-actions/setup-gcloud@v2"
       - name: "Submit image to Artifact Registry"
         run: "gcloud builds submit --tag us-central1-docker.pkg.dev/vivid-spot-462209-g5/notely-ar-repo/notely:latest ."
+      - name: Run migrations
+        run: npm run db:migrate
       - name: Deploy to Cloud Run
         run: gcloud run deploy notely --image us-central1-docker.pkg.dev/vivid-spot-462209-g5/notely-ar-repo/notely:latest --region us-central1 --allow-unauthenticated --project vivid-spot-462209-g5 --max-instances=4
